@@ -1,721 +1,702 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
-  >
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+>
 
-  <meta name="theme-color" content="#0b0613">
+<meta name="theme-color" content="#0b0613">
 
-  <title>Dulce o Truco 🎃</title>
+<title>Dulce o Truco 🎃</title>
 
-  <style>
+<style>
 
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+/* =====================================================
+   GENERAL
+===================================================== */
 
-    body {
-      margin: 0;
-      min-height: 100vh;
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
 
-      font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
+html,
+body {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+}
 
-      background:
-        radial-gradient(
-          circle at top,
-          #32104d 0%,
-          #16091f 35%,
-          #08050b 75%
-        );
+body {
+  min-height: 100vh;
 
-      color: white;
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 
-      display: flex;
-      justify-content: center;
-      align-items: center;
+  background:
+    radial-gradient(
+      circle at top,
+      #32104d 0%,
+      #16091f 35%,
+      #08050b 75%
+    );
 
-      overflow-x: hidden;
-    }
+  color: white;
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    .app {
+  overflow-x: hidden;
+}
 
-      width: 100%;
-      max-width: 460px;
+.app {
+  width: 100%;
+  max-width: 460px;
 
-      padding:
-        25px
-        18px
-        35px;
+  padding:
+    25px
+    18px
+    35px;
 
-      text-align: center;
+  text-align: center;
+}
 
-    }
+h1 {
+  margin: 0;
 
+  font-size:
+    clamp(
+      28px,
+      8vw,
+      40px
+    );
 
-    h1 {
+  font-weight: 900;
+}
 
-      margin: 0;
+.subtitle {
+  color: #cfc5d8;
+
+  margin:
+    8px
+    0
+    28px;
 
-      font-size:
-        clamp(
-          28px,
-          8vw,
-          40px
-        );
+  font-size: 15px;
+}
 
-      font-weight: 900;
 
-    }
+/* =====================================================
+   RULETA
+===================================================== */
 
+.stage {
+  position: relative;
 
-    .subtitle {
+  width:
+    min(
+      88vw,
+      390px
+    );
 
-      color: #cfc5d8;
+  height:
+    min(
+      88vw,
+      390px
+    );
 
-      margin:
-        8px
-        0
-        28px;
+  margin: auto;
 
-      font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    }
+.wheel {
+  position: relative;
 
+  width: 100%;
+  height: 100%;
 
+  border-radius: 50%;
 
-    /* ===================================
-       RULETA
-    =================================== */
+  overflow: hidden;
 
+  border:
+    7px
+    solid
+    #1c1c1c;
 
-    .stage {
+  box-shadow:
+    0
+    10px
+    35px
+    rgba(0,0,0,.55),
 
-      position: relative;
+    inset
+    0
+    0
+    0
+    3px
+    rgba(255,255,255,.15);
 
-      width:
-        min(
-          88vw,
-          390px
-        );
+  /*
+    10 sectores.
+    Cada uno mide 36 grados.
 
-      height:
-        min(
-          88vw,
-          390px
-        );
+    El primer sector DULCE
+    queda centrado arriba.
+  */
 
-      margin: auto;
+  background:
+    conic-gradient(
+      from -18deg,
 
-      display: flex;
+      #f97316 0deg 36deg,
+      #4c1d95 36deg 72deg,
 
-      align-items: center;
+      #f97316 72deg 108deg,
+      #4c1d95 108deg 144deg,
 
-      justify-content: center;
+      #f97316 144deg 180deg,
+      #4c1d95 180deg 216deg,
 
-    }
+      #f97316 216deg 252deg,
+      #4c1d95 252deg 288deg,
 
+      #f97316 288deg 324deg,
+      #4c1d95 324deg 360deg
+    );
 
+  transition:
+    transform
+    5s
+    cubic-bezier(
+      .12,
+      .72,
+      .08,
+      1
+    );
+}
 
-    .wheel {
 
-      position: relative;
+/* Líneas divisorias */
 
-      width: 100%;
-      height: 100%;
+.wheel::after {
+  content: "";
 
-      border-radius: 50%;
+  position: absolute;
+  inset: 0;
 
-      overflow: hidden;
+  border-radius: 50%;
 
-      border:
-        7px
-        solid
-        #1c1c1c;
+  background:
+    repeating-conic-gradient(
+      from -18deg,
 
-      box-shadow:
+      rgba(255,255,255,.45)
+      0deg
+      1deg,
 
-        0
-        10px
-        35px
-        rgba(0,0,0,.55),
+      transparent
+      1deg
+      36deg
+    );
 
-        inset
-        0
-        0
-        0
-        3px
-        rgba(255,255,255,.15);
+  pointer-events: none;
 
+  z-index: 5;
+}
 
-      /*
-      Cada segmento mide 36°.
 
-      Empezamos en -18° para que
-      el centro del primer DULCE
-      quede exactamente arriba.
-      */
+/* =====================================================
+   TEXTOS DE LA RULETA
+===================================================== */
 
-      background:
+.label {
+  position: absolute;
 
-        conic-gradient(
+  left: 50%;
+  top: 50%;
 
-          from -18deg,
+  width: 0;
+  height: 0;
 
-          #f97316 0deg 36deg,
+  z-index: 3;
 
-          #4c1d95 36deg 72deg,
+  pointer-events: none;
+}
 
-          #f97316 72deg 108deg,
+.label span {
+  position: absolute;
 
-          #4c1d95 108deg 144deg,
+  width: 110px;
 
-          #f97316 144deg 180deg,
+  left: -55px;
+  top: -14px;
 
-          #4c1d95 180deg 216deg,
+  font-weight: 900;
 
-          #f97316 216deg 252deg,
+  font-size:
+    clamp(
+      11px,
+      3.2vw,
+      15px
+    );
 
-          #4c1d95 252deg 288deg,
+  white-space: nowrap;
 
-          #f97316 288deg 324deg,
+  text-shadow:
+    0 2px 3px #000,
+    0 0 5px rgba(0,0,0,.7);
+}
 
-          #4c1d95 324deg 360deg
 
-        );
+/* =====================================================
+   CENTRO
+===================================================== */
 
+.hub {
+  position: absolute;
 
-      transition:
+  width: 82px;
+  height: 82px;
 
-        transform
-        5s
-        cubic-bezier(
-          .12,
-          .72,
-          .08,
-          1
-        );
+  border-radius: 50%;
 
-    }
+  background:
+    radial-gradient(
+      circle,
+      #27272a,
+      #09090b
+    );
 
+  border:
+    5px
+    solid
+    white;
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    /*
-    Líneas divisorias
-    */
+  font-size: 39px;
 
-    .wheel::after {
+  z-index: 10;
 
-      content: "";
+  box-shadow:
+    0
+    5px
+    15px
+    rgba(0,0,0,.5);
+}
 
-      position: absolute;
 
-      inset: 0;
+/* =====================================================
+   FLECHA
+===================================================== */
 
-      border-radius: 50%;
+.pointer {
+  position: absolute;
 
+  top: -7px;
+  left: 50%;
 
-      background:
+  transform:
+    translateX(-50%);
 
-        repeating-conic-gradient(
+  width: 0;
+  height: 0;
 
-          from -18deg,
+  border-left:
+    20px
+    solid
+    transparent;
 
-          rgba(
-            255,
-            255,
-            255,
-            .45
-          )
-          0deg
-          1deg,
+  border-right:
+    20px
+    solid
+    transparent;
 
-          transparent
-          1deg
-          36deg
+  border-top:
+    43px
+    solid
+    white;
 
-        );
+  z-index: 20;
 
+  filter:
+    drop-shadow(
+      0
+      3px
+      3px
+      rgba(0,0,0,.6)
+    );
+}
 
-      pointer-events: none;
 
-      z-index: 5;
+/* =====================================================
+   RESULTADO
+===================================================== */
 
-    }
+#result {
+  min-height: 55px;
 
+  margin-top: 22px;
 
+  font-size: 28px;
+  font-weight: 900;
 
-    /* ===================================
-       TEXTOS
-    =================================== */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.pop {
+  animation:
+    pop
+    .5s
+    ease-out;
+}
 
-    .label {
+@keyframes pop {
 
-      position: absolute;
+  0% {
+    transform: scale(.5);
+  }
 
-      left: 50%;
-      top: 50%;
+  65% {
+    transform: scale(1.2);
+  }
 
-      width: 0;
-      height: 0;
+  100% {
+    transform: scale(1);
+  }
 
-      z-index: 3;
+}
 
-      pointer-events: none;
 
-    }
+/* =====================================================
+   BOTÓN
+===================================================== */
 
+button {
+  width: 100%;
 
+  margin-top: 5px;
 
-    .label span {
+  padding: 17px;
 
-      position: absolute;
+  border: none;
 
-      width: 110px;
+  border-radius: 16px;
 
-      left: -55px;
-      top: -14px;
+  background:
+    linear-gradient(
+      135deg,
+      #f97316,
+      #ea580c
+    );
 
-      font-weight: 900;
+  color: white;
 
-      font-size:
+  font-size: 19px;
+  font-weight: 900;
 
-        clamp(
-          11px,
-          3.2vw,
-          15px
-        );
+  cursor: pointer;
 
-      white-space: nowrap;
+  box-shadow:
+    0
+    6px
+    18px
+    rgba(249,115,22,.35);
 
+  transition:
+    transform .15s,
+    opacity .15s;
+}
 
-      text-shadow:
+button:active {
+  transform: scale(.96);
+}
 
-        0
-        2px
-        3px
-        #000,
+button:disabled {
+  opacity: .65;
+}
 
-        0
-        0
-        5px
-        rgba(0,0,0,.7);
+.footer {
+  margin-top: 16px;
 
-    }
+  color: #a99caf;
 
+  font-size: 12px;
+}
 
 
-    /* ===================================
-       CENTRO
-    =================================== */
+/* =====================================================
+   DULCES VOLANDO
+===================================================== */
 
+.candy {
+  position: absolute;
 
-    .hub {
+  left: 50%;
+  top: 50%;
 
-      position: absolute;
+  font-size: 28px;
 
-      width: 82px;
-      height: 82px;
+  z-index: 50;
 
-      border-radius: 50%;
+  pointer-events: none;
 
+  animation:
+    candyFly
+    1.4s
+    ease-out
+    forwards;
+}
 
-      background:
+@keyframes candyFly {
 
-        radial-gradient(
+  0% {
+    opacity: 1;
 
-          circle,
+    transform:
+      translate(0,0)
+      rotate(0deg)
+      scale(.5);
+  }
 
-          #27272a,
+  40% {
+    opacity: 1;
+  }
 
-          #09090b
+  100% {
+    opacity: 0;
 
-        );
+    transform:
+      translate(
+        var(--x),
+        var(--y)
+      )
+      rotate(360deg)
+      scale(1.3);
+  }
 
+}
 
-      border:
-        5px
-        solid
-        white;
 
+/* =====================================================
+   JUMPSCARE
+===================================================== */
 
-      display: flex;
+#jumpscare {
+  position: fixed;
 
-      justify-content: center;
+  inset: 0;
 
-      align-items: center;
+  width: 100vw;
+  height: 100vh;
 
+  background: #000;
 
-      font-size: 39px;
+  display: none;
 
+  align-items: center;
+  justify-content: center;
 
-      z-index: 10;
+  z-index: 999999;
 
+  overflow: hidden;
+}
 
-      box-shadow:
 
-        0
-        5px
-        15px
-        rgba(0,0,0,.5);
+/*
+  La imagen cubre TODA
+  la pantalla.
+*/
 
-    }
+#jumpscare img {
+  width: 100%;
+  height: 100%;
 
+  object-fit: cover;
 
+  transform: scale(1);
 
-    /* ===================================
-       FLECHA
-    =================================== */
+  filter:
+    contrast(1.25)
+    brightness(1.1);
+}
 
 
-    .pointer {
+/*
+  Cuando activamos el susto,
+  aparece inmediatamente.
+*/
 
-      position: absolute;
+#jumpscare.active {
+  display: flex;
 
-      top: -7px;
+  animation:
+    flashScare
+    .12s
+    linear;
+}
 
-      left: 50%;
 
-      transform:
-        translateX(-50%);
+/*
+  Zoom + movimiento brusco
+*/
 
+#jumpscare.active img {
+  animation:
+    scareImage
+    .13s
+    infinite
+    alternate;
+}
 
-      width: 0;
 
-      height: 0;
+/*
+  Destello inicial
+*/
 
+@keyframes flashScare {
 
-      border-left:
-        20px
-        solid
-        transparent;
+  0% {
+    filter: brightness(4);
+  }
 
-      border-right:
-        20px
-        solid
-        transparent;
+  100% {
+    filter: brightness(1);
+  }
 
-      border-top:
-        43px
-        solid
-        white;
+}
 
 
-      z-index: 20;
+/*
+  Movimiento irregular de
+  la imagen.
+*/
 
+@keyframes scareImage {
 
-      filter:
+  0% {
+    transform:
+      scale(1.15)
+      translate(-5px, 3px)
+      rotate(-.5deg);
+  }
 
-        drop-shadow(
-          0
-          3px
-          3px
-          rgba(0,0,0,.6)
-        );
+  25% {
+    transform:
+      scale(1.22)
+      translate(7px, -5px)
+      rotate(.7deg);
+  }
 
-    }
+  50% {
+    transform:
+      scale(1.18)
+      translate(-8px, -2px)
+      rotate(-.4deg);
+  }
 
+  75% {
+    transform:
+      scale(1.25)
+      translate(5px, 6px)
+      rotate(.5deg);
+  }
 
+  100% {
+    transform:
+      scale(1.20)
+      translate(-4px, -6px)
+      rotate(-.6deg);
+  }
 
-    /* ===================================
-       RESULTADO
-    =================================== */
+}
 
 
-    #result {
+/* =====================================================
+   CELULARES PEQUEÑOS
+===================================================== */
 
-      min-height: 55px;
+@media(max-width: 360px) {
 
-      margin-top: 22px;
+  .app {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 
-      font-size: 28px;
+  .label span {
+    font-size: 10px;
 
-      font-weight: 900;
+    width: 90px;
 
+    left: -45px;
+  }
 
-      display: flex;
+}
 
-      align-items: center;
-
-      justify-content: center;
-
-    }
-
-
-
-    .pop {
-
-      animation:
-
-        pop
-        .5s
-        ease-out;
-
-    }
-
-
-
-    @keyframes pop {
-
-      0% {
-
-        transform:
-          scale(.5);
-
-      }
-
-
-      65% {
-
-        transform:
-          scale(1.2);
-
-      }
-
-
-      100% {
-
-        transform:
-          scale(1);
-
-      }
-
-    }
-
-
-
-    /* ===================================
-       BOTÓN
-    =================================== */
-
-
-    button {
-
-      width: 100%;
-
-      margin-top: 5px;
-
-      padding: 17px;
-
-
-      border: none;
-
-      border-radius: 16px;
-
-
-      background:
-
-        linear-gradient(
-
-          135deg,
-
-          #f97316,
-
-          #ea580c
-
-        );
-
-
-      color: white;
-
-
-      font-size: 19px;
-
-      font-weight: 900;
-
-
-      cursor: pointer;
-
-
-      box-shadow:
-
-        0
-        6px
-        18px
-        rgba(249,115,22,.35);
-
-
-      transition:
-
-        transform .15s,
-
-        opacity .15s;
-
-    }
-
-
-
-    button:active {
-
-      transform:
-        scale(.96);
-
-    }
-
-
-
-    button:disabled {
-
-      opacity: .65;
-
-    }
-
-
-
-    .footer {
-
-      margin-top: 16px;
-
-      color: #a99caf;
-
-      font-size: 12px;
-
-    }
-
-
-
-    /* ===================================
-       DULCES VOLANDO
-    =================================== */
-
-
-    .candy {
-
-      position: absolute;
-
-      left: 50%;
-      top: 50%;
-
-
-      font-size: 28px;
-
-
-      z-index: 50;
-
-
-      pointer-events: none;
-
-
-      animation:
-
-        candyFly
-        1.4s
-        ease-out
-        forwards;
-
-    }
-
-
-
-    @keyframes candyFly {
-
-      0% {
-
-        opacity: 1;
-
-        transform:
-
-          translate(0,0)
-
-          rotate(0deg)
-
-          scale(.5);
-
-      }
-
-
-      40% {
-
-        opacity: 1;
-
-      }
-
-
-      100% {
-
-        opacity: 0;
-
-
-        transform:
-
-          translate(
-            var(--x),
-            var(--y)
-          )
-
-          rotate(360deg)
-
-          scale(1.3);
-
-      }
-
-    }
-
-
-
-    /* ===================================
-       AJUSTE PARA CELULARES PEQUEÑOS
-    =================================== */
-
-
-    @media(max-width: 360px) {
-
-      .app {
-
-        padding-left: 10px;
-
-        padding-right: 10px;
-
-      }
-
-
-      .label span {
-
-        font-size: 10px;
-
-        width: 90px;
-
-        left: -45px;
-
-      }
-
-    }
-
-
-  </style>
+</style>
 
 </head>
-
 
 
 <body>
 
 
+<!-- ===================================================
+     JUMPSCARE
+=================================================== -->
+
+<div id="jumpscare">
+
+  <img
+    src="susto.jpg"
+    alt=""
+  >
+
+</div>
+
+
+<!--
+  El audio NO tiene autoplay.
+
+  Lo iniciamos mediante
+  interacción del usuario.
+-->
+
+<audio
+  id="scareAudio"
+  preload="auto"
+  src="audio.mp3"
+></audio>
+
+
+
+<!-- ===================================================
+     APLICACIÓN
+=================================================== -->
+
 <main class="app">
 
-
   <h1>
-
     🎃 DULCE O TRUCO 👻
-
   </h1>
 
-
   <p class="subtitle">
-
     Gira la ruleta y descubre tu destino...
-
   </p>
-
 
 
   <div
@@ -723,17 +704,9 @@
     id="stage"
   >
 
-
-    <!-- FLECHA -->
-
-
     <div
       class="pointer"
     ></div>
-
-
-
-    <!-- RULETA -->
 
 
     <div
@@ -742,321 +715,231 @@
     >
 
 
-
       <!-- DULCE -->
 
-
       <div
-
         class="label"
-
         style="
           transform:
           rotate(0deg)
           translateY(-125px);
         "
-
       >
 
         <span
-
           style="
             transform:
             rotate(0deg);
           "
-
         >
-
           🍬 DULCE
-
         </span>
 
       </div>
 
 
-
       <!-- TRUCO -->
 
-
       <div
-
         class="label"
-
         style="
           transform:
           rotate(36deg)
           translateY(-125px);
         "
-
       >
 
         <span
-
           style="
             transform:
             rotate(-36deg);
           "
-
         >
-
           🎃 TRUCO
-
         </span>
 
       </div>
 
 
-
       <!-- DULCE -->
 
-
       <div
-
         class="label"
-
         style="
           transform:
           rotate(72deg)
           translateY(-125px);
         "
-
       >
 
         <span
-
           style="
             transform:
             rotate(-72deg);
           "
-
         >
-
           🍭 DULCE
-
         </span>
 
       </div>
 
 
-
       <!-- TRUCO -->
 
-
       <div
-
         class="label"
-
         style="
           transform:
           rotate(108deg)
           translateY(-125px);
         "
-
       >
 
         <span
-
           style="
             transform:
             rotate(-108deg);
           "
-
         >
-
           👻 TRUCO
-
         </span>
 
       </div>
 
 
-
       <!-- DULCE -->
 
-
       <div
-
         class="label"
-
         style="
           transform:
           rotate(144deg)
           translateY(-125px);
         "
-
       >
 
         <span
-
           style="
             transform:
             rotate(-144deg);
           "
-
         >
-
           🍫 DULCE
-
         </span>
 
       </div>
 
 
-
       <!-- TRUCO -->
 
-
       <div
-
         class="label"
-
         style="
           transform:
           rotate(180deg)
           translateY(-125px);
         "
-
       >
 
         <span
-
           style="
             transform:
             rotate(-180deg);
           "
-
         >
-
           🕷️ TRUCO
-
         </span>
 
       </div>
 
 
-
       <!-- DULCE -->
 
-
       <div
-
         class="label"
-
         style="
           transform:
           rotate(216deg)
           translateY(-125px);
         "
-
       >
 
         <span
-
           style="
             transform:
             rotate(-216deg);
           "
-
         >
-
           🍬 DULCE
-
         </span>
 
       </div>
 
 
-
       <!-- TRUCO -->
 
-
       <div
-
         class="label"
-
         style="
           transform:
           rotate(252deg)
           translateY(-125px);
         "
-
       >
 
         <span
-
           style="
             transform:
             rotate(-252deg);
           "
-
         >
-
           💀 TRUCO
-
         </span>
 
       </div>
 
 
-
       <!-- DULCE -->
 
-
       <div
-
         class="label"
-
         style="
           transform:
           rotate(288deg)
           translateY(-125px);
         "
-
       >
 
         <span
-
           style="
             transform:
             rotate(-288deg);
           "
-
         >
-
           🍭 DULCE
-
         </span>
 
       </div>
 
 
-
       <!-- TRUCO -->
 
-
       <div
-
         class="label"
-
         style="
           transform:
           rotate(324deg)
           translateY(-125px);
         "
-
       >
 
         <span
-
           style="
             transform:
             rotate(-324deg);
           "
-
         >
-
           🦇 TRUCO
-
         </span>
 
       </div>
@@ -1065,66 +948,34 @@
     </div>
 
 
-
-    <!-- CENTRO -->
-
-
-    <div
-      class="hub"
-    >
-
+    <div class="hub">
       🎃
-
     </div>
-
 
   </div>
 
 
-
-  <!-- RESULTADO -->
-
-
-  <div
-    id="result"
-  ></div>
+  <div id="result"></div>
 
 
-
-  <!-- BOTÓN -->
-
-
-  <button
-    id="spin"
-  >
-
+  <button id="spin">
     🎡 GIRAR RULETA
-
   </button>
 
 
-
-  <div
-    class="footer"
-  >
-
+  <div class="footer">
     Toca el botón y deja que la suerte decida 🍬🎃
-
   </div>
-
 
 </main>
 
 
 
-
 <script>
 
-
-/* =========================================
+/* =====================================================
    ELEMENTOS
-========================================= */
-
+===================================================== */
 
 const wheel =
 document.getElementById("wheel");
@@ -1142,31 +993,43 @@ const stage =
 document.getElementById("stage");
 
 
+const jumpscare =
+document.getElementById("jumpscare");
+
+
+const scareAudio =
+document.getElementById("scareAudio");
+
+
+
+/* =====================================================
+   VARIABLES
+===================================================== */
 
 let rotation = 0;
-
 
 let spinning = false;
 
 
+/*
+  El jumpscare solamente
+  ocurre una vez mientras
+  la página permanezca abierta.
+*/
 
-/* =========================================
+let firstScare = true;
+
+
+
+/* =====================================================
    VIBRACIÓN
-========================================= */
+===================================================== */
 
-
-function vibrar(patron) {
-
-
-  /*
-  Si el navegador soporta
-  vibración, la ejecutamos.
-  */
-
+function vibrar(pattern) {
 
   if ("vibrate" in navigator) {
 
-    navigator.vibrate(patron);
+    navigator.vibrate(pattern);
 
   }
 
@@ -1174,49 +1037,37 @@ function vibrar(patron) {
 
 
 
-/* =========================================
-   POSICIONES DE DULCE
-========================================= */
-
+/* =====================================================
+   SECTORES DULCE
+===================================================== */
 
 const sweetCenters = [
 
   0,
-
   72,
-
   144,
-
   216,
-
   288
 
 ];
 
 
 
-/* =========================================
+/* =====================================================
    EXPLOSIÓN DE DULCES
-========================================= */
-
+===================================================== */
 
 function candyExplosion() {
-
 
   const candies = [
 
     "🍬",
-
     "🍭",
-
     "🍫",
-
     "🍬",
-
     "🍭"
 
   ];
-
 
 
   for(
@@ -1224,7 +1075,6 @@ function candyExplosion() {
     i < 24;
     i++
   ) {
-
 
     const candy =
     document.createElement(
@@ -1253,7 +1103,6 @@ function candyExplosion() {
       ];
 
 
-
     const angle =
 
       Math.random()
@@ -1267,7 +1116,6 @@ function candyExplosion() {
       2;
 
 
-
     const distance =
 
       80
@@ -1279,7 +1127,6 @@ function candyExplosion() {
       *
 
       170;
-
 
 
     candy.style.setProperty(
@@ -1299,7 +1146,6 @@ function candyExplosion() {
     );
 
 
-
     candy.style.setProperty(
 
       "--y",
@@ -1317,11 +1163,9 @@ function candyExplosion() {
     );
 
 
-
     stage.appendChild(
       candy
     );
-
 
 
     setTimeout(
@@ -1336,100 +1180,67 @@ function candyExplosion() {
 
     );
 
-
   }
 
 }
 
 
 
-/* =========================================
-   VIBRACIÓN DURANTE EL GIRO
-========================================= */
-
+/* =====================================================
+   VIBRACIÓN DE LA RULETA
+===================================================== */
 
 function vibracionRuleta() {
 
-
   /*
-  Los primeros clics están
-  muy juntos.
+    Simula los clics de una
+    ruleta mecánica.
 
-  Después se separan para
-  simular que la ruleta
-  está perdiendo velocidad.
+    Al principio rápidos.
+
+    Al final más lentos.
   */
-
 
   const tiempos = [
 
     80,
-
     170,
-
     260,
-
     350,
-
     440,
-
     530,
-
     630,
-
     730,
-
     840,
-
     950,
-
     1070,
-
     1200,
-
     1340,
-
     1490,
-
     1650,
-
     1820,
-
     2000,
-
     2200,
-
     2410,
-
     2640,
-
     2880,
-
     3140,
-
     3420,
-
     3720,
-
     4040,
-
     4380,
-
     4740
 
   ];
-
 
 
   tiempos.forEach(
 
     function(tiempo) {
 
-
       setTimeout(
 
         function() {
-
 
           if(spinning) {
 
@@ -1437,13 +1248,11 @@ function vibracionRuleta() {
 
           }
 
-
         },
 
         tiempo
 
       );
-
 
     }
 
@@ -1453,18 +1262,437 @@ function vibracionRuleta() {
 
 
 
-/* =========================================
-   GIRAR RULETA
-========================================= */
+/* =====================================================
+   JUMPSCARE
+===================================================== */
 
+function lanzarJumpscare() {
+
+  return new Promise(
+
+    function(resolve) {
+
+
+      /*
+        Esperamos un poco.
+
+        La persona cree que
+        simplemente empezará
+        la ruleta.
+      */
+
+      setTimeout(
+
+        function() {
+
+
+          /*
+            Mostrar imagen.
+          */
+
+          jumpscare.classList.add(
+            "active"
+          );
+
+
+          /*
+            Vibración agresiva.
+          */
+
+          vibrar([
+
+            100,
+            30,
+            100,
+            30,
+            250
+
+          ]);
+
+
+          /*
+            Reproducimos el grito.
+          */
+
+          scareAudio.currentTime = 0;
+
+
+          const playPromise =
+          scareAudio.play();
+
+
+          /*
+            Evitamos error si el
+            navegador bloquea audio.
+          */
+
+          if(
+            playPromise !== undefined
+          ) {
+
+            playPromise.catch(
+
+              function() {
+
+                console.log(
+                  "Audio bloqueado por el navegador."
+                );
+
+              }
+
+            );
+
+          }
+
+
+          /*
+            Dejamos el susto visible
+            aproximadamente 1.35 s.
+          */
+
+          setTimeout(
+
+            function() {
+
+
+              /*
+                Ocultar imagen.
+              */
+
+              jumpscare.classList.remove(
+                "active"
+              );
+
+
+              /*
+                Cortamos el audio.
+              */
+
+              scareAudio.pause();
+
+              scareAudio.currentTime = 0;
+
+
+              /*
+                Dejamos de vibrar.
+              */
+
+              vibrar(0);
+
+
+              /*
+                Continuar con
+                la ruleta.
+              */
+
+              resolve();
+
+
+            },
+
+            1350
+
+          );
+
+
+        },
+
+        650
+
+      );
+
+    }
+
+  );
+
+}
+
+
+
+/* =====================================================
+   GIRAR RULETA
+===================================================== */
+
+function girarRuleta() {
+
+
+  result.classList.remove(
+    "pop"
+  );
+
+
+  result.textContent =
+  "👻 Girando...";
+
+
+  /*
+    Vibración inicial.
+  */
+
+  vibrar(60);
+
+
+  /*
+    Clics de vibración.
+  */
+
+  vibracionRuleta();
+
+
+  /*
+    Seleccionamos aleatoriamente
+    uno de los centros DULCE.
+  */
+
+  const sweet =
+
+    sweetCenters[
+
+      Math.floor(
+
+        Math.random()
+
+        *
+
+        sweetCenters.length
+
+      )
+
+    ];
+
+
+  /*
+    Variación dentro del sector.
+
+    Máximo +/- 7 grados.
+
+    El sector mide 36 grados,
+    así que estamos lejos
+    de los bordes.
+  */
+
+  const variation =
+
+    -7
+
+    +
+
+    Math.random()
+
+    *
+
+    14;
+
+
+  const targetAngle =
+
+    sweet
+
+    +
+
+    variation;
+
+
+  /*
+    Convertimos la posición
+    deseada a rotación.
+  */
+
+  const desiredRotation =
+
+    (
+
+      360
+
+      -
+
+      targetAngle
+
+    )
+
+    %
+
+    360;
+
+
+  const currentRotation =
+
+    (
+
+      (
+
+        rotation
+
+        %
+
+        360
+
+      )
+
+      +
+
+      360
+
+    )
+
+    %
+
+    360;
+
+
+  const difference =
+
+    (
+
+      desiredRotation
+
+      -
+
+      currentRotation
+
+      +
+
+      360
+
+    )
+
+    %
+
+    360;
+
+
+  /*
+    Entre 6 y 8 vueltas.
+  */
+
+  const extraTurns =
+
+    6
+
+    +
+
+    Math.floor(
+
+      Math.random()
+
+      *
+
+      3
+
+    );
+
+
+  rotation +=
+
+    (
+
+      360
+
+      *
+
+      extraTurns
+
+    )
+
+    +
+
+    difference;
+
+
+  /*
+    GIRAR
+  */
+
+  wheel.style.transform =
+
+    "rotate("
+
+    +
+
+    rotation
+
+    +
+
+    "deg)";
+
+
+  /*
+    Esperamos que termine
+    la animación.
+  */
+
+  setTimeout(
+
+    function() {
+
+
+      result.textContent =
+      "🍬 ¡DULCE! 🍬";
+
+
+      result.classList.add(
+        "pop"
+      );
+
+
+      /*
+        Vibración de victoria.
+      */
+
+      vibrar([
+
+        120,
+        80,
+        120,
+        80,
+        280
+
+      ]);
+
+
+      /*
+        Explosión de dulces.
+      */
+
+      candyExplosion();
+
+
+      /*
+        Reactivar botón.
+      */
+
+      button.disabled =
+      false;
+
+
+      spinning =
+      false;
+
+
+    },
+
+    5100
+
+  );
+
+}
+
+
+
+/* =====================================================
+   BOTÓN
+===================================================== */
 
 button.addEventListener(
 
   "click",
 
-  function() {
+  async function() {
 
 
+    /*
+      Evitar doble toque.
+    */
 
     if(spinning) {
 
@@ -1473,322 +1701,61 @@ button.addEventListener(
     }
 
 
-
     spinning = true;
 
 
-
-    button.disabled = true;
-
-
-
-    result.classList.remove(
-      "pop"
-    );
-
-
-
-    result.textContent =
-    "👻 Girando...";
-
+    button.disabled =
+    true;
 
 
     /*
-    Vibración al presionar
-    el botón.
+      PRIMER GIRO:
+
+      JUMPSCARE
     */
 
+    if(firstScare) {
 
-    vibrar(60);
 
+      firstScare =
+      false;
+
+
+      /*
+        Ponemos un mensaje
+        inocente mientras
+        esperamos.
+      */
+
+      result.textContent =
+      "🎃 Preparando la ruleta...";
+
+
+      /*
+        Ejecutar susto.
+      */
+
+      await lanzarJumpscare();
+
+    }
 
 
     /*
-    Iniciamos las pequeñas
-    vibraciones durante
-    el giro.
+      Después del susto,
+      o directamente en
+      giros posteriores,
+      giramos.
     */
 
-
-    vibracionRuleta();
-
-
-
-    /*
-    Elegimos aleatoriamente
-    uno de los sectores
-    DULCE.
-    */
-
-
-    const sweet =
-
-      sweetCenters[
-
-        Math.floor(
-
-          Math.random()
-
-          *
-
-          sweetCenters.length
-
-        )
-
-      ];
-
-
-
-    /*
-    Pequeña variación.
-
-    Evitamos acercarnos
-    demasiado a las líneas
-    divisorias.
-    */
-
-
-    const variation =
-
-      -7
-
-      +
-
-      Math.random()
-
-      *
-
-      14;
-
-
-
-    const targetAngle =
-
-      sweet
-
-      +
-
-      variation;
-
-
-
-    /*
-    Calculamos dónde debe
-    terminar la ruleta.
-    */
-
-
-    const desiredRotation =
-
-      (
-
-        360
-
-        -
-
-        targetAngle
-
-      )
-
-      %
-
-      360;
-
-
-
-    const currentRotation =
-
-      (
-
-        (
-
-          rotation
-
-          %
-
-          360
-
-        )
-
-        +
-
-        360
-
-      )
-
-      %
-
-      360;
-
-
-
-    const difference =
-
-      (
-
-        desiredRotation
-
-        -
-
-        currentRotation
-
-        +
-
-        360
-
-      )
-
-      %
-
-      360;
-
-
-
-    /*
-    Entre 6 y 8 vueltas.
-    */
-
-
-    const extraTurns =
-
-      6
-
-      +
-
-      Math.floor(
-
-        Math.random()
-
-        *
-
-        3
-
-      );
-
-
-
-    rotation +=
-
-      (
-
-        360
-
-        *
-
-        extraTurns
-
-      )
-
-      +
-
-      difference;
-
-
-
-    /*
-    Iniciamos animación.
-    */
-
-
-    wheel.style.transform =
-
-      "rotate("
-
-      +
-
-      rotation
-
-      +
-
-      "deg)";
-
-
-
-    /*
-    Cuando termina el giro.
-    */
-
-
-    setTimeout(
-
-      function() {
-
-
-
-        result.textContent =
-
-        "🍬 ¡DULCE! 🍬";
-
-
-
-        result.classList.add(
-          "pop"
-        );
-
-
-
-        /*
-        Vibración especial
-        de victoria.
-
-        vibrar
-        pausa
-        vibrar
-        pausa
-        vibración larga
-        */
-
-
-        vibrar([
-
-          120,
-
-          80,
-
-          120,
-
-          80,
-
-          280
-
-        ]);
-
-
-
-        /*
-        Lanzamos dulces.
-        */
-
-
-        candyExplosion();
-
-
-
-        button.disabled =
-        false;
-
-
-
-        spinning =
-        false;
-
-
-
-      },
-
-      5100
-
-    );
+    girarRuleta();
 
 
   }
 
 );
 
-
 </script>
 
 
 </body>
-
 </html>
